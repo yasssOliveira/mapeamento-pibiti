@@ -1,0 +1,807 @@
+***************ALTERAÇÕES*****************
+posicionamento dos botoes
+tirar esse monte de modalidade
+
+>>>>>pessoas<<<<<
+--> email e telefone bem inútil
+
+>>>>>torneios<<<<<<<
+--> descrição ?
+
+>>>>times<<<<<
+-->  times cadastrados?
+
+>>>incrições<<<<
+
+>>>>>membros<<<<<< (talvez suma)
+--> a parte de inscrição em membros tem que mudar 
+--> nao quero esse id antes dos nomes de nada
+--> tem q ter um jeito de conseguir achar os torneios no banco tipo um id ou sugerir ele se o nome ja existir p evitar duplicatas
+--> fodase o papel em membros 
+--> q porrra dee titular oq 
+--> a escolha dos atletas tem que ser por search e nao uma lista
+--> num da camisa tb n importa muito pq pode mudar na hora do jogo
+
+>>>>>>perfis<<<<<<<
+--> campos alteráveis
+--> mais campos tipo descição altura peso sla mais oq
+--> melhorar interface
+--> numero de serie
+
+
+
+pra parte de video 
+*********PRIORIDADE ALTA*********  
+> conseguir sincronizar arquivo de video e de audio  
+> conseguir navegar entre as minutagens (aquela bolinha igual do youtube)
+> botões com reações tipo positivo negativo converrsa paralela e etc pre definidos
+> preciso poder adicionar os integrantes que ja tao no bbanco pra "fazerem parte
+do video"  pra fazer anotações detalhadas pra eles (minuto tal - integrante tal : ficou cocm raiva slakk)
+> preciso poder conectar integrantes entre si pra depois colocar o tipo de reação 
+que tiveram  (integrante tal  - integrane  tal : conversa paralela)
+> conseguir criar botões e personalizar eles com as reações
+> fazer marcações em minutos específicos
+>>> essas marcações podem conter
+	1. recados digitados descrições etc 
+		-> anotações detalhadas pra eles (minuto tal - integrante tal : ficou cocm raiva slakk)
+		-> tipo de reação que tiveram  (integrante tal  - integrane  tal : conversa paralela)
+	2. reações de botões ja ciradas
+
+*********PRIORIDADE MEDIA*********
+> mudar a velocidade podendo aumentar ou diminuir
+> precisa ter um bloco onde possam ser feitas anotações gerais tpo uma  pagina de notes
+
+*********PRIORIDADE BAIXA*********
+> seria interessante que  todas os blocos de informações (video, botoes e etc)
+fossem movimentáveis pela tela
+> quero poder ampliar o video podendo deixar ele na tela inteira 
+> quero  que o video possa ser editável tipo fazer cortes e descartar partes
+
+
+
+
+> seria muito foda se desse p no final de tudo  gerar umm doc com as informações
+principais  tipo
+- nome do video
+- integrantes do video  
+- anotações de reação
+* minuto  tal  -  reação  tal (integrante tal  - integrante tal)
+* minuto  tal  -  reação  tal (integrante tal  - integrante tal)
+* minuto  tal  -  reação  tal (integrante tal  - integrante tal)
+- anotações soltas
+* blablabla
+* blablabla
+* blablabla
+- anotações de integrantes
+* integrante tal - blablabla
+* integrante tal - blablabla
+* integrante tal - blablabla***************ALTERAÇÕES*****************
+posicionamento dos botoes
+tirar esse monte de modalidade
+
+>>>>>pessoas<<<<<
+--> email e telefone bem inútil
+
+>>>>>torneios<<<<<<<
+--> descrição ?
+
+>>>>times<<<<<
+-->  times cadastrados?
+
+>>>incrições<<<<
+
+>>>>>membros<<<<<< (talvez suma)
+--> a parte de inscrição em membros tem que mudar 
+--> nao quero esse id antes dos nomes de nada
+--> tem q ter um jeito de conseguir achar os torneios no banco tipo um id ou sugerir ele se o nome ja existir p evitar duplicatas
+--> fodase o papel em membros 
+--> q porrra dee titular oq 
+--> a escolha dos atletas tem que ser por search e nao uma lista
+--> num da camisa tb n importa muito pq pode mudar na hora do jogo
+
+>>>>>>perfis<<<<<<<
+--> campos alteráveis
+--> mais campos tipo descição altura peso sla mais oq
+--> melhorar interface
+--> numero de serie
+
+
+
+pra parte de video 
+*********PRIORIDADE ALTA*********  
+> conseguir sincronizar arquivo de video e de audio  
+> conseguir navegar entre as minutagens (aquela bolinha igual do youtube)
+> botões com reações tipo positivo negativo converrsa paralela e etc pre definidos
+> preciso poder adicionar os integrantes que ja tao no bbanco pra "fazerem parte
+do video"  pra fazer anotações detalhadas pra eles (minuto tal - integrante tal : ficou cocm raiva slakk)
+> preciso poder conectar integrantes entre si pra depois colocar o tipo de reação 
+que tiveram  (integrante tal  - integrane  tal : conversa paralela)
+> conseguir criar botões e personalizar eles com as reações
+> fazer marcações em minutos específicos
+>>> essas marcações podem conter
+	1. recados digitados descrições etc 
+		-> anotações detalhadas pra eles (minuto tal - integrante tal : ficou cocm raiva slakk)
+		-> tipo de reação que tiveram  (integrante tal  - integrane  tal : conversa paralela)
+	2. reações de botões ja ciradas
+
+*********PRIORIDADE MEDIA*********
+> mudar a velocidade podendo aumentar ou diminuir
+> precisa ter um bloco onde possam ser feitas anotações gerais tpo uma  pagina de notes
+
+*********PRIORIDADE BAIXA*********
+> seria interessante que  todas os blocos de informações (video, botoes e etc)
+fossem movimentáveis pela tela
+> quero poder ampliar o video podendo deixar ele na tela inteira 
+> quero  que o video possa ser editável tipo fazer cortes e descartar partes
+
+
+
+
+> seria muito foda se desse p no final de tudo  gerar umm doc com as informações
+principais  tipo
+- nome do video
+- integrantes do video  
+- anotações de reação
+* minuto  tal  -  reação  tal (integrante tal  - integrante tal)
+* minuto  tal  -  reação  tal (integrante tal  - integrante tal)
+* minuto  tal  -  reação  tal (integrante tal  - integrante tal)
+- anotações soltas
+* blablabla
+* blablabla
+* blablabla
+- anotações de integrantes
+* integrante tal - blablabla
+* integrante tal - blablabla
+* integrante tal - blablabla
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import sqlite3
+
+conn = sqlite3.connect('TurmasData.db')
+
+cursor = conn.cursor()
+
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS Professores(
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    NomeProf TEXT NOT NULL,
+    CPF TEXT UNIQUE NOT NULL,
+    Telefone TEXT NOT NULL
+    );
+''')
+
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS Turmas(
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    NomeTurma TEXT UNIQUE NOT NULL COLLATE NOCASE,
+    CodigoTurma TEXT NOT NULL,
+    NomeProf TEXT NOT NULL,
+    ProfId INTERGER,
+    FOREIGN KEY (ProfId) REFERENCES Professores(Id)        
+    );
+''')
+
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS Alunos(
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    NomeAluno TEXT NOT NULL,
+    CPF TEXT UNIQUE NOT NULL,
+    NumCamisa INTEGER,
+    TurmaId INTEGER,
+    FOREIGN KEY (TurmaId) REFERENCES Turmas(Id)     
+    );
+''')
+
+
+print("conectou")
+conn.commit()
+
+
+
+# app.py  ←  arquivo único, roda direto com: python app.py
+
+import customtkinter as ctk
+from tkinter import messagebox, ttk
+
+# importa o banco
+import sys
+import os
+sys.path.insert(0, os.path.dirname(__file__))  # garante que acha o módulo db
+
+from db.crud import (
+    listar_modalidades,
+    cadastrar_pessoa,
+    listar_pessoas,
+    buscar_pessoa_por_cpf,
+    vincular_modalidade_pessoa,
+    listar_modalidades_da_pessoa,
+    criar_torneio,
+    listar_torneios,
+    criar_time,
+    listar_times,
+    inscrever_time,
+    atualizar_status_inscricao,
+    listar_times_do_torneio,
+    adicionar_membro,
+    listar_membros_da_inscricao,
+)
+
+# ============================================================
+# CONFIGURAÇÃO GLOBAL
+# ============================================================
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
+
+
+# ============================================================
+# COMPONENTES REUTILIZÁVEIS
+# ============================================================
+
+def campo(parent, label, row, col=0, width=220, placeholder=""):
+    ctk.CTkLabel(parent, text=label, anchor="w").grid(
+        row=row, column=col, sticky="w", padx=10, pady=(8, 0)
+    )
+    entry = ctk.CTkEntry(parent, width=width, placeholder_text=placeholder)
+    entry.grid(row=row, column=col + 1, sticky="w", padx=10, pady=(8, 0))
+    return entry
+
+
+def botao(parent, label, command, row, col, color="#1f6aa5", width=140):
+    btn = ctk.CTkButton(parent, text=label, command=command,
+                        fg_color=color, width=width)
+    btn.grid(row=row, column=col, padx=10, pady=10, sticky="w")
+    return btn
+
+
+def tabela(parent, colunas, row, col, colspan=4, height=8):
+    frame = ctk.CTkFrame(parent)
+    frame.grid(row=row, column=col, columnspan=colspan,
+               padx=10, pady=10, sticky="nsew")
+
+    style = ttk.Style()
+    style.theme_use("clam")
+    style.configure("Treeview",
+                    background="#2b2b2b",
+                    foreground="white",
+                    rowheight=26,
+                    fieldbackground="#2b2b2b",
+                    bordercolor="#2b2b2b",
+                    borderwidth=0)
+    style.map("Treeview", background=[("selected", "#1f6aa5")])
+    style.configure("Treeview.Heading",
+                    background="#1a1a2e",
+                    foreground="white",
+                    relief="flat")
+
+    tree = ttk.Treeview(frame, columns=colunas, show="headings", height=height)
+    for col_name in colunas:
+        tree.heading(col_name, text=col_name)
+        tree.column(col_name, width=130, anchor="center")
+
+    scroll = ttk.Scrollbar(frame, orient="vertical", command=tree.yview)
+    tree.configure(yscrollcommand=scroll.set)
+    tree.pack(side="left", fill="both", expand=True)
+    scroll.pack(side="right", fill="y")
+    return tree
+
+
+# ============================================================
+# ABA PESSOAS
+# ============================================================
+
+class AbaPessoa(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self._build()
+
+    def _build(self):
+        ctk.CTkLabel(self, text="Cadastro de Pessoa",
+                     font=ctk.CTkFont(size=18, weight="bold")).grid(
+            row=0, column=0, columnspan=4, pady=(14, 4), sticky="w", padx=10
+        )
+
+        self.e_nome = campo(self, "Nome completo", row=1)
+        self.e_cpf  = campo(self, "CPF",           row=2, placeholder="000.000.000-00")
+        self.e_nasc = campo(self, "Nascimento",    row=3, placeholder="AAAA-MM-DD")
+        self.e_tel  = campo(self, "Telefone",      row=4, placeholder="(00) 00000-0000")
+        self.e_mail = campo(self, "E-mail",        row=5)
+
+        ctk.CTkLabel(self, text="Modalidades", anchor="w").grid(
+            row=6, column=0, sticky="w", padx=10, pady=(8, 0)
+        )
+        self.frame_modal = ctk.CTkScrollableFrame(self, width=380, height=120)
+        self.frame_modal.grid(row=6, column=1, columnspan=3,
+                               padx=10, pady=(8, 0), sticky="w")
+
+        self._vars_modal = {}
+        for m in listar_modalidades():
+            var = ctk.BooleanVar()
+            chk = ctk.CTkCheckBox(self.frame_modal, text=m['Nome'], variable=var)
+            chk.pack(anchor="w", pady=2)
+            self._vars_modal[m['Id']] = var
+
+        botao(self, "Salvar pessoa",  self._salvar, row=7, col=1)
+        botao(self, "Listar pessoas", self._listar, row=7, col=2, color="#2d6a4f")
+
+        self.tree = tabela(
+            self,
+            ["Id", "Nome", "CPF", "Nascimento", "Telefone", "Modalidades"],
+            row=8, col=0, colspan=4
+        )
+
+    def _salvar(self):
+        nome = self.e_nome.get().strip()
+        cpf  = self.e_cpf.get().strip()
+        nasc = self.e_nasc.get().strip()
+        tel  = self.e_tel.get().strip()
+        mail = self.e_mail.get().strip()
+
+        if not nome or not cpf or not nasc:
+            messagebox.showwarning("Atenção", "Nome, CPF e Nascimento são obrigatórios.")
+            return
+
+        existente = buscar_pessoa_por_cpf(cpf)
+        if existente:
+            messagebox.showerror("CPF duplicado",
+                                 f"CPF já cadastrado para: {existente['NomeCompleto']}")
+            return
+
+        try:
+            pid = cadastrar_pessoa(nome, cpf, nasc, mail or None, tel or None)
+            for mid, var in self._vars_modal.items():
+                if var.get():
+                    vincular_modalidade_pessoa(pid, mid)
+            messagebox.showinfo("Sucesso", f"Pessoa '{nome}' cadastrada!")
+            self._limpar()
+            self._listar()
+        except Exception as e:
+            messagebox.showerror("Erro", str(e))
+
+    def _listar(self):
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        for p in listar_pessoas():
+            mods = listar_modalidades_da_pessoa(p['Id'])
+            nomes_mods = ", ".join(m['Nome'] for m in mods) or "—"
+            self.tree.insert("", "end", values=(
+                p['Id'], p['NomeCompleto'], p['CPF'],
+                p['DataNascimento'], p['Telefone'] or "—", nomes_mods
+            ))
+
+    def _limpar(self):
+        for e in [self.e_nome, self.e_cpf, self.e_nasc, self.e_tel, self.e_mail]:
+            e.delete(0, "end")
+        for var in self._vars_modal.values():
+            var.set(False)
+
+
+# ============================================================
+# ABA TORNEIOS
+# ============================================================
+
+class AbaTorneio(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self._build()
+
+    def _build(self):
+        ctk.CTkLabel(self, text="Torneios",
+                     font=ctk.CTkFont(size=18, weight="bold")).grid(
+            row=0, column=0, columnspan=4, pady=(14, 4), sticky="w", padx=10
+        )
+
+        self.e_nome      = campo(self, "Nome",      row=1)
+        self.e_local     = campo(self, "Local",     row=2)
+        self.e_categoria = campo(self, "Categoria", row=3)
+        self.e_inicio    = campo(self, "Início",    row=4, placeholder="AAAA-MM-DD")
+        self.e_fim       = campo(self, "Fim",       row=5, placeholder="AAAA-MM-DD")
+        self.e_descricao = campo(self, "Descrição", row=6)
+
+        ctk.CTkLabel(self, text="Modalidade", anchor="w").grid(
+            row=7, column=0, sticky="w", padx=10, pady=(8, 0)
+        )
+        self._modal_ids   = []
+        self._modal_nomes = []
+        for m in listar_modalidades():
+            self._modal_ids.append(m['Id'])
+            self._modal_nomes.append(m['Nome'])
+
+        self.combo_modal = ctk.CTkComboBox(self, values=self._modal_nomes, width=220)
+        self.combo_modal.grid(row=7, column=1, padx=10, pady=(8, 0), sticky="w")
+
+        botao(self, "Salvar torneio",  self._salvar, row=8, col=1)
+        botao(self, "Listar torneios", self._listar, row=8, col=2, color="#2d6a4f")
+
+        self.tree = tabela(
+            self,
+            ["Id", "Nome", "Modalidade", "Local", "Início", "Fim", "Status"],
+            row=9, col=0, colspan=4
+        )
+
+    def _salvar(self):
+        nome      = self.e_nome.get().strip()
+        local     = self.e_local.get().strip()
+        categ     = self.e_categoria.get().strip()
+        inicio    = self.e_inicio.get().strip()
+        fim       = self.e_fim.get().strip()
+        descricao = self.e_descricao.get().strip()
+        modal_nome = self.combo_modal.get()
+
+        if not nome or not modal_nome:
+            messagebox.showwarning("Atenção", "Nome e Modalidade são obrigatórios.")
+            return
+
+        try:
+            modal_id = self._modal_ids[self._modal_nomes.index(modal_nome)]
+            criar_torneio(
+                nome=nome, modalidade_id=modal_id,
+                descricao=descricao or None,
+                data_inicio=inicio or None,
+                data_fim=fim or None,
+                local=local or None,
+                categoria=categ or None,
+            )
+            messagebox.showinfo("Sucesso", f"Torneio '{nome}' criado!")
+            self._limpar()
+            self._listar()
+        except Exception as e:
+            messagebox.showerror("Erro", str(e))
+
+    def _listar(self):
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        for t in listar_torneios():
+            self.tree.insert("", "end", values=(
+                t['Id'], t['Nome'], t.get('NomeModalidade', '—'),
+                t['Local'] or '—', t['DataInicio'] or '—',
+                t['DataFim'] or '—', t['Status']
+            ))
+
+    def _limpar(self):
+        for e in [self.e_nome, self.e_local, self.e_categoria,
+                  self.e_inicio, self.e_fim, self.e_descricao]:
+            e.delete(0, "end")
+
+
+# ============================================================
+# ABA TIMES
+# ============================================================
+
+class AbaTime(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self._build()
+
+    def _build(self):
+        ctk.CTkLabel(self, text="Times",
+                     font=ctk.CTkFont(size=18, weight="bold")).grid(
+            row=0, column=0, columnspan=4, pady=(14, 4), sticky="w", padx=10
+        )
+
+        self.e_nome      = campo(self, "Nome",        row=1)
+        self.e_inst      = campo(self, "Instituição", row=2)
+        self.e_cidade    = campo(self, "Cidade",      row=3)
+        self.e_estado    = campo(self, "Estado (UF)", row=4, width=80)
+        self.e_categoria = campo(self, "Categoria",   row=5)
+
+        botao(self, "Salvar time",  self._salvar, row=6, col=1)
+        botao(self, "Listar times", self._listar, row=6, col=2, color="#2d6a4f")
+
+        self.tree = tabela(
+            self,
+            ["Id", "Nome", "Instituição", "Cidade", "UF", "Categoria"],
+            row=7, col=0, colspan=4
+        )
+
+    def _salvar(self):
+        nome  = self.e_nome.get().strip()
+        inst  = self.e_inst.get().strip()
+        cid   = self.e_cidade.get().strip()
+        uf    = self.e_estado.get().strip().upper()
+        categ = self.e_categoria.get().strip()
+
+        if not nome:
+            messagebox.showwarning("Atenção", "Nome do time é obrigatório.")
+            return
+
+        try:
+            criar_time(nome, inst or None, cid or None, uf or None, categ or None)
+            messagebox.showinfo("Sucesso", f"Time '{nome}' criado!")
+            self._limpar()
+            self._listar()
+        except Exception as e:
+            messagebox.showerror("Erro", str(e))
+
+    def _listar(self):
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        for t in listar_times():
+            self.tree.insert("", "end", values=(
+                t['Id'], t['Nome'], t['Instituicao'] or '—',
+                t['Cidade'] or '—', t['Estado'] or '—', t['Categoria'] or '—'
+            ))
+
+    def _limpar(self):
+        for e in [self.e_nome, self.e_inst, self.e_cidade,
+                  self.e_estado, self.e_categoria]:
+            e.delete(0, "end")
+
+
+# ============================================================
+# ABA INSCRIÇÕES
+# ============================================================
+
+class AbaInscricao(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self._build()
+
+    def _build(self):
+        ctk.CTkLabel(self, text="Inscrição de Time em Torneio",
+                     font=ctk.CTkFont(size=18, weight="bold")).grid(
+            row=0, column=0, columnspan=4, pady=(14, 4), sticky="w", padx=10
+        )
+
+        ctk.CTkLabel(self, text="Torneio", anchor="w").grid(
+            row=1, column=0, sticky="w", padx=10, pady=(8, 0)
+        )
+        self._torneio_ids   = []
+        self._torneio_nomes = []
+        self.combo_torneio = ctk.CTkComboBox(self, values=[], width=300)
+        self.combo_torneio.grid(row=1, column=1, padx=10, pady=(8, 0), sticky="w")
+
+        ctk.CTkLabel(self, text="Time", anchor="w").grid(
+            row=2, column=0, sticky="w", padx=10, pady=(8, 0)
+        )
+        self._time_ids   = []
+        self._time_nomes = []
+        self.combo_time = ctk.CTkComboBox(self, values=[], width=300)
+        self.combo_time.grid(row=2, column=1, padx=10, pady=(8, 0), sticky="w")
+
+        botao(self, "↺ Atualizar",          self._carregar_combos, row=3, col=0, color="#555", width=120)
+        botao(self, "Inscrever time",        self._inscrever,       row=3, col=1)
+        botao(self, "Ver times do torneio",  self._listar,          row=3, col=2, color="#2d6a4f")
+
+        self.tree = tabela(
+            self,
+            ["InscricaoId", "Time", "Instituição", "Status"],
+            row=4, col=0, colspan=4
+        )
+
+        self._carregar_combos()
+
+    def _carregar_combos(self):
+        self._torneio_ids, self._torneio_nomes = [], []
+        for t in listar_torneios():
+            self._torneio_ids.append(t['Id'])
+            self._torneio_nomes.append(f"{t['Id']} – {t['Nome']}")
+        self.combo_torneio.configure(values=self._torneio_nomes)
+        if self._torneio_nomes:
+            self.combo_torneio.set(self._torneio_nomes[0])
+
+        self._time_ids, self._time_nomes = [], []
+        for t in listar_times():
+            self._time_ids.append(t['Id'])
+            self._time_nomes.append(f"{t['Id']} – {t['Nome']}")
+        self.combo_time.configure(values=self._time_nomes)
+        if self._time_nomes:
+            self.combo_time.set(self._time_nomes[0])
+
+    def _inscrever(self):
+        try:
+            tidx = self._torneio_nomes.index(self.combo_torneio.get())
+            eidx = self._time_nomes.index(self.combo_time.get())
+            iid  = inscrever_time(self._torneio_ids[tidx], self._time_ids[eidx])
+            atualizar_status_inscricao(iid, 'confirmada')
+            messagebox.showinfo("Sucesso", "Time inscrito e confirmado!")
+            self._listar()
+        except ValueError as e:
+            messagebox.showerror("Erro", "Time já inscrito nesse torneio ou seleção inválida.")
+        except Exception as e:
+            messagebox.showerror("Erro", str(e))
+
+    def _listar(self):
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        try:
+            tidx = self._torneio_nomes.index(self.combo_torneio.get())
+            tid  = self._torneio_ids[tidx]
+            for t in listar_times_do_torneio(tid):
+                self.tree.insert("", "end", values=(
+                    t['InscricaoId'], t['NomeTime'],
+                    t['Instituicao'] or '—', t['StatusInscricao']
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", str(e))
+
+
+# ============================================================
+# ABA MEMBROS
+# ============================================================
+
+class AbaMembro(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self._build()
+
+    def _build(self):
+        ctk.CTkLabel(self, text="Adicionar Membro à Inscrição",
+                     font=ctk.CTkFont(size=18, weight="bold")).grid(
+            row=0, column=0, columnspan=4, pady=(14, 4), sticky="w", padx=10
+        )
+
+        ctk.CTkLabel(self, text="Inscrição", anchor="w").grid(
+            row=1, column=0, sticky="w", padx=10, pady=(8, 0)
+        )
+        self._insc_ids   = []
+        self._insc_nomes = []
+        self.combo_insc = ctk.CTkComboBox(self, values=[], width=340)
+        self.combo_insc.grid(row=1, column=1, columnspan=2,
+                              padx=10, pady=(8, 0), sticky="w")
+
+        ctk.CTkLabel(self, text="Pessoa", anchor="w").grid(
+            row=2, column=0, sticky="w", padx=10, pady=(8, 0)
+        )
+        self._pessoa_ids   = []
+        self._pessoa_nomes = []
+        self.combo_pessoa = ctk.CTkComboBox(self, values=[], width=340)
+        self.combo_pessoa.grid(row=2, column=1, columnspan=2,
+                                padx=10, pady=(8, 0), sticky="w")
+
+        ctk.CTkLabel(self, text="Papel", anchor="w").grid(
+            row=3, column=0, sticky="w", padx=10, pady=(8, 0)
+        )
+        self.combo_papel = ctk.CTkComboBox(self, values=["ATLETA", "TREINADOR"], width=160)
+        self.combo_papel.set("ATLETA")
+        self.combo_papel.grid(row=3, column=1, padx=10, pady=(8, 0), sticky="w")
+
+        self.e_camisa  = campo(self, "Nº Camisa", row=4, width=80)
+        self.e_posicao = campo(self, "Posição",   row=5)
+
+        self.var_titular = ctk.BooleanVar()
+        ctk.CTkCheckBox(self, text="Titular", variable=self.var_titular).grid(
+            row=6, column=1, sticky="w", padx=10, pady=(8, 0)
+        )
+
+        botao(self, "↺ Atualizar",      self._carregar, row=7, col=0, color="#555", width=120)
+        botao(self, "Adicionar membro", self._adicionar, row=7, col=1)
+        botao(self, "Ver membros",      self._listar,    row=7, col=2, color="#2d6a4f")
+
+        self.tree = tabela(
+            self,
+            ["MembroId", "Nome", "CPF", "Papel", "Camisa", "Posição", "Titular"],
+            row=8, col=0, colspan=4
+        )
+
+        self._carregar()
+
+    def _carregar(self):
+        self._insc_ids, self._insc_nomes = [], []
+        for t in listar_torneios():
+            for insc in listar_times_do_torneio(t['Id']):
+                self._insc_ids.append(insc['InscricaoId'])
+                self._insc_nomes.append(
+                    f"{insc['InscricaoId']} – {t['Nome']} / {insc['NomeTime']}"
+                )
+        self.combo_insc.configure(values=self._insc_nomes)
+        if self._insc_nomes:
+            self.combo_insc.set(self._insc_nomes[0])
+
+        self._pessoa_ids, self._pessoa_nomes = [], []
+        for p in listar_pessoas():
+            self._pessoa_ids.append(p['Id'])
+            self._pessoa_nomes.append(f"{p['Id']} – {p['NomeCompleto']}")
+        self.combo_pessoa.configure(values=self._pessoa_nomes)
+        if self._pessoa_nomes:
+            self.combo_pessoa.set(self._pessoa_nomes[0])
+
+    def _adicionar(self):
+        try:
+            iidx    = self._insc_nomes.index(self.combo_insc.get())
+            pidx    = self._pessoa_nomes.index(self.combo_pessoa.get())
+            papel   = self.combo_papel.get()
+            camisa  = self.e_camisa.get().strip()
+            posicao = self.e_posicao.get().strip()
+
+            adicionar_membro(
+                inscricao_time_id=self._insc_ids[iidx],
+                pessoa_id=self._pessoa_ids[pidx],
+                papel=papel,
+                numero_camisa=int(camisa) if camisa else None,
+                posicao=posicao or None,
+                titular=self.var_titular.get()
+            )
+            messagebox.showinfo("Sucesso", "Membro adicionado!")
+            self._listar()
+        except Exception as e:
+            messagebox.showerror("Erro", str(e))
+
+    def _listar(self):
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        try:
+            iidx = self._insc_nomes.index(self.combo_insc.get())
+            iid  = self._insc_ids[iidx]
+            for m in listar_membros_da_inscricao(iid):
+                self.tree.insert("", "end", values=(
+                    m['MembroId'], m['NomeCompleto'], m['CPF'],
+                    m['Papel'], m['NumeroCamisa'] or '—',
+                    m['Posicao'] or '—',
+                    'Sim' if m['Titular'] else 'Não'
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", str(e))
+
+
+# ============================================================
+# JANELA PRINCIPAL  ← definida por último, depois de todas as abas
+# ============================================================
+
+class App(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        self.title("Sistema de Torneios")
+        self.geometry("960x680")
+        self.resizable(True, True)
+        self._build_ui()
+
+    def _build_ui(self):
+        notebook = ttk.Notebook(self)
+        notebook.pack(fill="both", expand=True, padx=10, pady=10)
+
+        abas = [
+            (AbaPessoa,    "  Pessoas  "),
+            (AbaTorneio,   "  Torneios  "),
+            (AbaTime,      "  Times  "),
+            (AbaInscricao, "  Inscrições  "),
+            (AbaMembro,    "  Membros  "),
+        ]
+
+        for Classe, titulo in abas:
+            aba = Classe(notebook)
+            notebook.add(aba, text=titulo)
+
+
+# ============================================================
+# ENTRY POINT
+# ============================================================
+
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
+
+def criar_torneio(nome, modalidade_id, descricao=None, data_inicio=None,
+                  data_fim=None):
+    with get_conn() as conn:
+        cursor = conn.execute('''
+            INSERT INTO Torneio (Nome, Descricao, DataInicio, DataFim, ModalidadeId)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (nome, descricao, data_inicio, data_fim, modalidade_id))
+        torneio_id = cursor.lastrowid
+    print(f"Torneio '{nome}' criado com Id {torneio_id}.")
+    return torneio_id
+
+
+
