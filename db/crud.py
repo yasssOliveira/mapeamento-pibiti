@@ -650,6 +650,37 @@ def remover_integrante_sessao(sessao_id, pessoa_id):
             WHERE SessaoId = ? AND PessoaId = ?
         ''', (sessao_id, pessoa_id))
 
+def atualizar_sessao_video(sessao_id, caminho_video=None, caminho_audio=None, audio_offset=None):
+    """Atualiza os caminhos de mídia e/ou o offset de sincronização de uma sessão."""
+    campos = []
+    valores = []
+
+    if caminho_video is not None:
+        campos.append("CaminhoVideo = ?")
+        valores.append(caminho_video)
+    if caminho_audio is not None:
+        campos.append("CaminhoAudio = ?")
+        valores.append(caminho_audio)
+    if audio_offset is not None:
+        campos.append("AudioOffset = ?")
+        valores.append(audio_offset)
+
+    if not campos:
+        return
+
+    valores.append(sessao_id)
+    with get_conn() as conn:
+        conn.execute(
+            f"UPDATE SessaoVideo SET {', '.join(campos)} WHERE Id = ?",
+            valores
+        )
+    
+def buscar_sessao_por_id(sessao_id):
+    with get_conn() as conn:
+        row = conn.execute(
+            'SELECT * FROM SessaoVideo WHERE Id = ?', (sessao_id,)
+        ).fetchone()
+        return dict(row) if row else None
 # ============================================================
 # BOTÕES DE REAÇÃO
 # ============================================================

@@ -30,17 +30,18 @@ from db.crud import (
     listar_times_do_torneio,
     adicionar_membro,
     listar_membros_da_inscricao,
-    buscar_por_serie,       
+    buscar_por_serie,
     buscar_historico_atleta,
     buscar_times_treinados,
     gerar_numero_serie,
     atualizar_pessoa,
-    criar_sessao, 
+    criar_sessao,
     listar_sessoes,
-    adicionar_integrante_sessao, 
+    adicionar_integrante_sessao,
     listar_integrantes_sessao,
-    remover_integrante_sessao, 
-    #listar_pessoa,
+    remover_integrante_sessao,
+    atualizar_sessao_video,
+    buscar_sessao_por_id,
 )
 
 # ============================================================
@@ -1432,9 +1433,19 @@ class AbaVideo(ctk.CTkFrame):
         self._iniciar_player()
         self._atualizar_integrantes_sessao()
 
+    def _sair_da_sessao(self):
+            if hasattr(self, "_player_widget"):
+                self._player_widget.destroy()
+                del self._player_widget
+            if hasattr(self, "_painel_widget"):
+                self._painel_widget.destroy()
+                del self._painel_widget
+
+            self._sessao_id = None
+            self.lbl_hint.pack(pady=20)
+
     def _iniciar_player(self):
         self.lbl_hint.pack_forget()
-
         if hasattr(self, "_player_widget"):
             self._player_widget.destroy()
         if hasattr(self, "_painel_widget"):
@@ -1442,7 +1453,8 @@ class AbaVideo(ctk.CTkFrame):
 
         self._player_widget = PlayerVideo(
             self.frame_esq,
-            on_marcar=lambda s: self._painel_widget._marcar()
+            on_marcar=lambda s: self._painel_widget._marcar(),
+            on_sair=self._sair_da_sessao
         )
         self._player_widget.pack(fill="both", expand=True, padx=10, pady=6)
 
@@ -1452,6 +1464,9 @@ class AbaVideo(ctk.CTkFrame):
             player=self._player_widget
         )
         self._painel_widget.pack(fill="both", expand=True, padx=4, pady=4)
+
+        # Restaura vídeo/áudio salvos, se existirem
+        self._player_widget.carregar_sessao_salva(self._sessao_id)
 
     # --- INTEGRANTES ---
     def _buscar_integrante(self):

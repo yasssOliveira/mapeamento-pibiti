@@ -2,18 +2,14 @@ import customtkinter as ctk
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import cv2
-import threading
-import time
-from PIL import Image, ImageTk
-
-import customtkinter as ctk
-import tkinter as tk
-from tkinter import filedialog, messagebox
-import cv2
 import os
 import threading
 import time
 from PIL import Image, ImageTk
+
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from db.crud import atualizar_sessao_video, buscar_sessao_por_id
 
 try:
     import pygame
@@ -49,6 +45,7 @@ class PlayerVideo(ctk.CTkFrame):
         self._px_per_sec        = 50
         self._drag_start_x      = None
         self._drag_start_offset = 0.0
+        self._sessao_id         = None   # setado por carregar_sessao_salva()
 
         self._build()
 
@@ -237,6 +234,14 @@ class PlayerVideo(ctk.CTkFrame):
 
         self._mostrar_frame_atual()
 
+        self.lbl_nome_video.configure(text=f"🎬 {os.path.basename(path)}",
+                                       text_color="white")
+
+        self._mostrar_frame_atual()
+
+        if self._sessao_id:
+            atualizar_sessao_video(self._sessao_id, caminho_video=path)
+
     def carregar_audio(self):
         if not AUDIO_OK:
             messagebox.showwarning("Pygame não instalado",
@@ -253,6 +258,10 @@ class PlayerVideo(ctk.CTkFrame):
             self._desenhar_timeline()
             self.lbl_nome_audio.configure(text=f"🎵 {os.path.basename(path)}",
                                            text_color="white")
+
+            if self._sessao_id:
+                atualizar_sessao_video(self._sessao_id,
+                                        caminho_audio=path, audio_offset=0.0)
             
     # --- CONTROLES ---
     def play(self):
@@ -359,12 +368,16 @@ class PlayerVideo(ctk.CTkFrame):
         self._desenhar_timeline()
         if self._tocando:
             self._tocar_audio_sincronizado(self.segundo_atual())
-    
+        if self._sessao_id:
+            atualizar_sessao_video(self._sessao_id, audio_offset=self._audio_offset)
+
     def _reset_offset(self):
         self._audio_offset = 0.0
         self._desenhar_timeline()
         if self._tocando:
             self._tocar_audio_sincronizado(self.segundo_atual())
+        if self._sessao_id:
+            atualizar_sessao_video(self._sessao_id, audio_offset=self._audio_offset)
 
     def _aplicar_offset_manual(self):
         texto = self.e_offset.get().strip().replace(",", ".")
@@ -377,6 +390,8 @@ class PlayerVideo(ctk.CTkFrame):
         self._desenhar_timeline()
         if self._tocando:
             self._tocar_audio_sincronizado(self.segundo_atual())
+        if self._sessao_id:
+            atualizar_sessao_video(self._sessao_id, audio_offset=self._audio_offset)
 
     def _tocar_audio_sincronizado(self, segundo_video):
         """
@@ -431,6 +446,8 @@ class PlayerVideo(ctk.CTkFrame):
         self._drag_start_x = None
         if self._tocando:
             self._tocar_audio_sincronizado(self.segundo_atual())
+        if self._sessao_id:
+            atualizar_sessao_video(self._sessao_id, audio_offset=self._audio_offset)
     
     def _zoom_timeline(self, delta):
         self._px_per_sec = max(10, min(200, self._px_per_sec + delta))
@@ -495,3 +512,39 @@ class PlayerVideo(ctk.CTkFrame):
         else:
             self.play()
             self.btn_play.configure(text="⏸ Pause")
+
+    def carregar_sessao_salva(self, sessao_id):
+        """Chamado ao abrir uma sessão: recarrega vídeo/áudio/offset salvos, se existirem."""
+        self._sessao_id = sessao_id
+        sessao = buscar_sessao_por_id(sessao_id)
+        if not sessao:
+            return
+
+        caminho_video = sessao.get("CaminhoVideo")
+        caminho_audio = sessao.get("CaminhoAudio")
+        offset        = sessao.get("AudioOffset") or 0.0
+
+        if caminho_video and os.path.isfile(caminho_video):
+            self._cap = cv2.VideoCapture(caminho_video)
+            if self._cap.isOpened():
+                self._fps          = self._cap.get(cv2.CAP_PROP_FPS) or 30
+                self._total_frames = int(self._cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                self.slider.configure(to=self._total_frames)
+                self._atualizar_tempo(0)
+                self._video_duration = self._total_frames / self._fps if self._fps else 0
+                self.lbl_nome_video.configure(
+                    text=f"🎬 {os.path.basename(caminho_video)}", text_color="white"
+                )
+                self._mostrar_frame_atual()
+            else:
+                self._cap = None
+
+        if caminho_audio and os.path.isfile(caminho_audio):
+            self._audio_path = caminho_audio
+            self._audio_duration = self._obter_duracao_audio(caminho_audio)
+            self.lbl_nome_audio.configure(
+                text=f"🎵 {os.path.basename(caminho_audio)}", text_color="white"
+            )
+
+        self._audio_offset = offset
+        self._desenhar_timeline()

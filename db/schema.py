@@ -163,6 +163,7 @@ CREATE TABLE IF NOT EXISTS SessaoVideo (
     Titulo      TEXT    NOT NULL,
     CaminhoVideo TEXT,
     CaminhoAudio TEXT,
+    AudioOffset  REAL    NOT NULL DEFAULT 0,
     TimeId      INTEGER,
     TorneioId   INTEGER,
     CriadoEm   TEXT    NOT NULL DEFAULT (datetime('now')),
