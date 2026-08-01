@@ -1521,20 +1521,28 @@ class App(ctk.CTk):
     def _build_ui(self):
         notebook = ttk.Notebook(self)
         notebook.pack(fill="both", expand=True, padx=10, pady=10)
-
         abas = [
             (AbaPessoa,    "  👤 Pessoas  "),
             (AbaTorneio,   "  🏆 Torneios  "),
             (AbaTime,      "  👥 Times  "),
             (AbaInscricao, "  📝 Inscrições  "),
             (AbaMembro,    "  Membros  "),
-            (AbaPerfil,    "  🔍 Perfis  "), 
+            (AbaPerfil,    "  🔍 Perfis  "),
             (AbaVideo,     "  🎬 Análise  "),
         ]
-
         for Classe, titulo in abas:
-            aba = Classe(notebook)
-            notebook.add(aba, text=titulo)
+            # página real do notebook: um frame comum, filho direto dele
+            pagina = ctk.CTkFrame(notebook, fg_color="transparent")
+            notebook.add(pagina, text=titulo)
+            pagina.pack_propagate(True)
+
+            # dentro da página, o scroll
+            scroll = ctk.CTkScrollableFrame(pagina, fg_color="transparent")
+            scroll.pack(fill="both", expand=True)
+
+            # a aba de verdade vai dentro do scroll
+            aba = Classe(scroll)
+            aba.pack(fill="both", expand=True)
 
 # ============================================================
 # ENTRY POINT

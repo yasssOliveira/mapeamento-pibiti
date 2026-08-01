@@ -4,6 +4,7 @@ tirar esse monte de modalidade
 
 >>>>>pessoas<<<<<
 --> email e telefone bem inútil
+--> nao ta aparecendo as modalidades do atleta
 
 >>>>>torneios<<<<<<<
 --> descrição ?
@@ -25,119 +26,37 @@ tirar esse monte de modalidade
 >>>>>>perfis<<<<<<<
 --> campos alteráveis
 --> mais campos tipo descição altura peso sla mais oq
---> melhorar interface
---> numero de serie
-
+--> adicionar ou excluir modalidades 
 
 
 pra parte de video 
-*********PRIORIDADE ALTA*********  
-> conseguir sincronizar arquivo de video e de audio  
-> conseguir navegar entre as minutagens (aquela bolinha igual do youtube)
-> botões com reações tipo positivo negativo converrsa paralela e etc pre definidos
-> preciso poder adicionar os integrantes que ja tao no bbanco pra "fazerem parte
-do video"  pra fazer anotações detalhadas pra eles (minuto tal - integrante tal : ficou cocm raiva slakk)
-> preciso poder conectar integrantes entre si pra depois colocar o tipo de reação 
-que tiveram  (integrante tal  - integrane  tal : conversa paralela)
-> conseguir criar botões e personalizar eles com as reações
-> fazer marcações em minutos específicos
->>> essas marcações podem conter
-	1. recados digitados descrições etc 
-		-> anotações detalhadas pra eles (minuto tal - integrante tal : ficou cocm raiva slakk)
-		-> tipo de reação que tiveram  (integrante tal  - integrane  tal : conversa paralela)
-	2. reações de botões ja ciradas
+*********PRIORIDADE ALTA*********    
+> sair da sessão - nao ta funcionando eu quero que volte pra tela q aparece antes de eu fazer a pesquisa de 
+uma sessao que ja existe ou criar uma nova sessao
+> mover a parte onde aparece pra sincronizar o audio pq ela nao se mexe
+> tem que aparecer na barra de progresso tipo umas barras verticais sempre que houver uma marcação no tempo
+atual ou apertar no botao marcar aqui e tambem quando tiver uma reação
+> tem q ter uma parte que apareça uma previa das marcações que ja foram e estao sendo feitas e um botao que 
+gere um *arquivo no final tipo um relatorio 
+> se o video acabar antes e continuar rodando o audio a barra de progresso do audio tem que progredir ate
+o audio acabar 
+> salvar sessao pra quando eu entrar dnv na sessao o video ja ta carregado o audio e as marcações e etc
+
 
 *********PRIORIDADE MEDIA*********
 > mudar a velocidade podendo aumentar ou diminuir
-> precisa ter um bloco onde possam ser feitas anotações gerais tpo uma  pagina de notes
+> ao inves de aparecer nome e tipo tem q aparece nome e numero de serie nas tabelinhas 
 
 *********PRIORIDADE BAIXA*********
 > seria interessante que  todas os blocos de informações (video, botoes e etc)
 fossem movimentáveis pela tela
 > quero poder ampliar o video podendo deixar ele na tela inteira 
-> quero  que o video possa ser editável tipo fazer cortes e descartar partes
+> quero que o video possa ser editável tipo fazer cortes e descartar partes
 
 
 
 
-> seria muito foda se desse p no final de tudo  gerar umm doc com as informações
-principais  tipo
-- nome do video
-- integrantes do video  
-- anotações de reação
-* minuto  tal  -  reação  tal (integrante tal  - integrante tal)
-* minuto  tal  -  reação  tal (integrante tal  - integrante tal)
-* minuto  tal  -  reação  tal (integrante tal  - integrante tal)
-- anotações soltas
-* blablabla
-* blablabla
-* blablabla
-- anotações de integrantes
-* integrante tal - blablabla
-* integrante tal - blablabla
-* integrante tal - blablabla***************ALTERAÇÕES*****************
-posicionamento dos botoes
-tirar esse monte de modalidade
-
->>>>>pessoas<<<<<
---> email e telefone bem inútil
-
->>>>>torneios<<<<<<<
---> descrição ?
-
->>>>times<<<<<
--->  times cadastrados?
-
->>>incrições<<<<
-
->>>>>membros<<<<<< (talvez suma)
---> a parte de inscrição em membros tem que mudar 
---> nao quero esse id antes dos nomes de nada
---> tem q ter um jeito de conseguir achar os torneios no banco tipo um id ou sugerir ele se o nome ja existir p evitar duplicatas
---> fodase o papel em membros 
---> q porrra dee titular oq 
---> a escolha dos atletas tem que ser por search e nao uma lista
---> num da camisa tb n importa muito pq pode mudar na hora do jogo
-
->>>>>>perfis<<<<<<<
---> campos alteráveis
---> mais campos tipo descição altura peso sla mais oq
---> melhorar interface
---> numero de serie
-
-
-
-pra parte de video 
-*********PRIORIDADE ALTA*********  
-> conseguir sincronizar arquivo de video e de audio  
-> conseguir navegar entre as minutagens (aquela bolinha igual do youtube)
-> botões com reações tipo positivo negativo converrsa paralela e etc pre definidos
-> preciso poder adicionar os integrantes que ja tao no bbanco pra "fazerem parte
-do video"  pra fazer anotações detalhadas pra eles (minuto tal - integrante tal : ficou cocm raiva slakk)
-> preciso poder conectar integrantes entre si pra depois colocar o tipo de reação 
-que tiveram  (integrante tal  - integrane  tal : conversa paralela)
-> conseguir criar botões e personalizar eles com as reações
-> fazer marcações em minutos específicos
->>> essas marcações podem conter
-	1. recados digitados descrições etc 
-		-> anotações detalhadas pra eles (minuto tal - integrante tal : ficou cocm raiva slakk)
-		-> tipo de reação que tiveram  (integrante tal  - integrane  tal : conversa paralela)
-	2. reações de botões ja ciradas
-
-*********PRIORIDADE MEDIA*********
-> mudar a velocidade podendo aumentar ou diminuir
-> precisa ter um bloco onde possam ser feitas anotações gerais tpo uma  pagina de notes
-
-*********PRIORIDADE BAIXA*********
-> seria interessante que  todas os blocos de informações (video, botoes e etc)
-fossem movimentáveis pela tela
-> quero poder ampliar o video podendo deixar ele na tela inteira 
-> quero  que o video possa ser editável tipo fazer cortes e descartar partes
-
-
-
-
-> seria muito foda se desse p no final de tudo  gerar umm doc com as informações
+*> seria muito foda se desse p no final de tudo  gerar umm doc com as informações
 principais  tipo
 - nome do video
 - integrantes do video  
@@ -153,21 +72,6 @@ principais  tipo
 * integrante tal - blablabla
 * integrante tal - blablabla
 * integrante tal - blablabla
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

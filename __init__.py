@@ -1,0 +1,1 @@
+self._audio_offset = 0.0   # offset em segundos, ajustável na UI
