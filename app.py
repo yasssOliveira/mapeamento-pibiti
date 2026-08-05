@@ -1294,13 +1294,16 @@ class AbaVideo(ctk.CTkFrame):
         self._build()
 
     def _build(self):
-        # Divide em esquerda (player) e direita (anotações)
+        # Divide em esquerda (player) e direita (anotações, com scroll próprio)
         self.frame_esq = ctk.CTkFrame(self)
         self.frame_esq.pack(side="left", fill="both", expand=True, padx=(10, 4), pady=10)
 
-        self.frame_dir = ctk.CTkFrame(self, width=320)
-        self.frame_dir.pack(side="right", fill="y", padx=(4, 10), pady=10)
-        self.frame_dir.pack_propagate(False)
+        frame_dir_wrapper = ctk.CTkFrame(self, width=320)
+        frame_dir_wrapper.pack(side="right", fill="y", padx=(4, 10), pady=10)
+        frame_dir_wrapper.pack_propagate(False)
+
+        self.frame_dir = ctk.CTkScrollableFrame(frame_dir_wrapper, fg_color="transparent")
+        self.frame_dir.pack(fill="both", expand=True)
 
         self._build_sessao()
 

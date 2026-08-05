@@ -9,7 +9,7 @@ from PIL import Image, ImageTk
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from db.crud import atualizar_sessao_video, buscar_sessao_por_id
+from db.crud import atualizar_sessao_video, buscar_sessao_por_id, listar_marcacoes
 
 try:
     import pygame
@@ -45,9 +45,15 @@ class PlayerVideo(ctk.CTkFrame):
         self._px_per_sec        = 50
         self._drag_start_x      = None
         self._drag_start_offset = 0.0
-        self._sessao_id         = None   # setado por carregar_sessao_salva()
+        self._sessao_id         = None
+        self._audio_after_id    = None
+        self._audio_start_time  = None
+        self._audio_start_pos   = 0.0
 
-        self._build()
+        self._marcacoes_cache   = []     # cache local, evita bater no banco a cada frame
+        self._preview_after_id  = None   # controla o loop de atualização da prévia
+
+        self._build()   
 
     def _build(self):
         # --- Barra superior: sair da sessão ---
@@ -77,9 +83,22 @@ class PlayerVideo(ctk.CTkFrame):
         self.slider.set(0)
         self.slider.pack(fill="x", padx=10, pady=4)
 
+        # --- Timeline de marcações (barras verticais sobre o vídeo) ---
+        self.canvas_marcacoes = tk.Canvas(self, width=640, height=20,
+                                           bg="#1a1a1a", highlightthickness=0)
+        self.canvas_marcacoes.pack(fill="x", padx=10, pady=(0, 2))
+        self.canvas_marcacoes.bind("<Button-1>", self._clicar_marcacao_timeline)
+
         # Tempo
         self.lbl_tempo = ctk.CTkLabel(self, text="00:00 / 00:00")
         self.lbl_tempo.pack()
+
+        # --- Prévia das marcações (feitas e por vir) ---
+        ctk.CTkLabel(self, text="Marcações:", anchor="w").pack(fill="x", padx=10, pady=(4, 0))
+        self.frame_preview_marcacoes = ctk.CTkScrollableFrame(
+            self, height=54, orientation="horizontal"
+        )
+        self.frame_preview_marcacoes.pack(fill="x", padx=10, pady=(2, 6))
 
         # Áudio 
         sync = ctk.CTkFrame(self)
@@ -242,6 +261,8 @@ class PlayerVideo(ctk.CTkFrame):
         if self._sessao_id:
             atualizar_sessao_video(self._sessao_id, caminho_video=path)
 
+        self.atualizar_marcacoes()
+
     def carregar_audio(self):
         if not AUDIO_OK:
             messagebox.showwarning("Pygame não instalado",
@@ -279,25 +300,38 @@ class PlayerVideo(ctk.CTkFrame):
             print(f"[aviso] Falha ao sincronizar áudio: {e}")
 
         self._tick_video()
+        self._tick_preview()
 
     def pause(self):
         self._tocando = False
         if self._after_id:
             self.after_cancel(self._after_id)
             self._after_id = None
+        if self._audio_after_id:
+            self.after_cancel(self._audio_after_id)
+            self._audio_after_id = None
         if AUDIO_OK and pygame.mixer.music.get_busy():
             pygame.mixer.music.pause()
+        if self._preview_after_id:
+            self.after_cancel(self._preview_after_id)
+            self._preview_after_id = None
 
     def stop(self):
         self._tocando = False
         if self._after_id:
             self.after_cancel(self._after_id)
             self._after_id = None
+        if self._audio_after_id:
+            self.after_cancel(self._audio_after_id)
+            self._audio_after_id = None
         self._frame_atual = 0
         if AUDIO_OK and pygame.mixer.music.get_busy():
             pygame.mixer.music.stop()
         if self._cap:
             self._cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        if self._preview_after_id:
+            self.after_cancel(self._preview_after_id)
+            self._preview_after_id = None
         self.slider.set(0)
         self._atualizar_tempo(0)
         self.audio_progress.set(0)
@@ -325,7 +359,7 @@ class PlayerVideo(ctk.CTkFrame):
         self.lbl_video.image = imgtk
         self.slider.set(self._frame_atual)
         self._atualizar_tempo(self._frame_atual)
-        self._atualizar_progresso_audio()
+        self._desenhar_marcacoes_timeline()
 
         delay_ms = int(1000 / self._fps) if self._fps else 33
         self._after_id = self.after(delay_ms, self._tick_video)
@@ -345,7 +379,6 @@ class PlayerVideo(ctk.CTkFrame):
             self._mostrar_frame_atual()
 
         self._atualizar_tempo(frame)
-        self._atualizar_progresso_audio()
 
     # --- MARCAÇÃO ---
     def _marcar_atual(self):
@@ -398,23 +431,27 @@ class PlayerVideo(ctk.CTkFrame):
         Toca o áudio já considerando o offset de sincronização configurado.
 
         Convenção: offset positivo significa que a trilha de áudio começa
-        MAIS TARDE em relação ao vídeo (arrastada para a direita na timeline).
-        offset negativo significa que o áudio começa ANTES do vídeo.
+        MAIS TARDE em relação ao vídeo. offset negativo significa que o
+        áudio começa ANTES do vídeo.
         """
         if not (AUDIO_OK and self._audio_path):
             return
 
-        # posição dentro do arquivo de áudio que deveria estar tocando agora
         posicao_audio = segundo_video - self._audio_offset
+
+        # cancela um loop de progresso anterior, se houver
+        if self._audio_after_id:
+            self.after_cancel(self._audio_after_id)
+            self._audio_after_id = None
 
         try:
             if posicao_audio >= 0:
-                # o áudio já deveria ter começado: toca a partir dessa posição
                 pygame.mixer.music.load(self._audio_path)
                 pygame.mixer.music.play(start=posicao_audio)
+                self._audio_start_time = time.time()
+                self._audio_start_pos  = posicao_audio
+                self._tick_audio_progress()
             else:
-                # o áudio ainda não deveria ter começado: espera e só então
-                # inicia a reprodução a partir do começo do arquivo
                 delay = -posicao_audio
                 pygame.mixer.music.stop()
 
@@ -424,6 +461,9 @@ class PlayerVideo(ctk.CTkFrame):
                         try:
                             pygame.mixer.music.load(self._audio_path)
                             pygame.mixer.music.play(start=0)
+                            self._audio_start_time = time.time()
+                            self._audio_start_pos  = 0.0
+                            self._tick_audio_progress()
                         except Exception as e:
                             print(f"[aviso] Falha ao tocar áudio atrasado: {e}")
 
@@ -482,23 +522,6 @@ class PlayerVideo(ctk.CTkFrame):
         # já que .read() avança a posição
         self._cap.set(cv2.CAP_PROP_POS_FRAMES, self._frame_atual)
 
-    def _atualizar_progresso_audio(self):
-        if not (self._audio_path and self._audio_duration):
-            self.audio_progress.set(0)
-            self.lbl_audio_tempo.configure(text="00:00 / 00:00")
-            return
-
-        pos_audio = self.segundo_atual() + self._audio_offset
-        pos_audio = max(0, min(pos_audio, self._audio_duration))
-        ratio = pos_audio / self._audio_duration if self._audio_duration else 0
-
-        self.audio_progress.set(ratio)
-
-        def fmt(s):
-            return f"{int(s)//60:02d}:{int(s)%60:02d}"
-        self.lbl_audio_tempo.configure(
-            text=f"{fmt(pos_audio)} / {fmt(self._audio_duration)}"
-        )
 
     def _sair_da_sessao(self):
         self.stop()
@@ -548,3 +571,145 @@ class PlayerVideo(ctk.CTkFrame):
 
         self._audio_offset = offset
         self._desenhar_timeline()
+        self.atualizar_marcacoes()
+
+    def _tick_audio_progress(self):
+        """
+        Atualiza a barra de progresso do áudio com base em tempo real decorrido,
+        de forma independente do loop de vídeo — continua rodando mesmo que o
+        vídeo já tenha terminado, mantendo o áudio como referência.
+        """
+        if not (AUDIO_OK and self._audio_path):
+            return
+
+        # Fallback: se não conseguimos detectar a duração real do áudio
+        # (comum com MP3, que o pygame.mixer.Sound não lê bem), usa a
+        # duração do vídeo como referência aproximada para a barra não
+        # ficar travada.
+        duracao_ref = self._audio_duration or self._video_duration or 60
+
+        if not pygame.mixer.music.get_busy():
+            if self._tocando:
+                self.audio_progress.set(1.0)
+                def fmt(s):
+                    return f"{int(s)//60:02d}:{int(s)%60:02d}"
+                self.lbl_audio_tempo.configure(
+                    text=f"{fmt(duracao_ref)} / {fmt(duracao_ref)}"
+                )
+            return
+
+        decorrido = time.time() - self._audio_start_time
+        pos_audio = self._audio_start_pos + decorrido
+        pos_audio = max(0, min(pos_audio, duracao_ref))
+        ratio = pos_audio / duracao_ref if duracao_ref else 0
+
+        self.audio_progress.set(ratio)
+
+        def fmt(s):
+            return f"{int(s)//60:02d}:{int(s)%60:02d}"
+        self.lbl_audio_tempo.configure(
+            text=f"{fmt(pos_audio)} / {fmt(duracao_ref)}"
+        )
+
+        self._audio_after_id = self.after(200, self._tick_audio_progress)
+
+    def _recarregar_cache_marcacoes(self):
+        if not self._sessao_id:
+            self._marcacoes_cache = []
+            return
+        try:
+            self._marcacoes_cache = listar_marcacoes(self._sessao_id)
+        except Exception as e:
+            print(f"[aviso] Falha ao carregar marcações: {e}")
+            self._marcacoes_cache = []
+
+    def _desenhar_marcacoes_timeline(self):
+        """Desenha as barras de marcação e a posição atual (playhead) sobre a timeline do vídeo."""
+        c = self.canvas_marcacoes
+        c.delete("all")
+
+        duracao_total = self._video_duration
+        if not duracao_total:
+            return
+
+        largura = c.winfo_width()
+        if largura <= 1:
+            # widget ainda não foi renderizado (largura real indisponível);
+            # tenta de novo no próximo ciclo em vez de desenhar errado
+            self.after(50, self._desenhar_marcacoes_timeline)
+            return
+
+        for m in self._marcacoes_cache:
+            seg = m.get("SegundoMarca", 0)
+            cor = m.get("Cor") or "#e74c3c"
+            x = (seg / duracao_total) * largura
+            c.create_line(x, 0, x, 20, fill=cor, width=2)
+
+        # Playhead: posição atual do vídeo
+        seg_atual = self.segundo_atual()
+        x_atual = (seg_atual / duracao_total) * largura
+        c.create_line(x_atual, 0, x_atual, 20, fill="white", width=1, dash=(2, 1))
+
+    def _clicar_marcacao_timeline(self, event):
+        """Clicar na timeline de marcações pula o vídeo para aquele ponto."""
+        if not self._cap or not self._total_frames or not self._video_duration:
+            return
+        largura = self.canvas_marcacoes.winfo_width()
+        if largura <= 1:
+            return
+        segundo = (event.x / largura) * self._video_duration
+        frame = int(segundo * self._fps)
+        frame = max(0, min(frame, self._total_frames))
+
+        self._frame_atual = frame
+        self._cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
+        self.slider.set(frame)
+        self._atualizar_tempo(frame)
+        self._desenhar_marcacoes_timeline()
+
+        if not self._tocando:
+            self._mostrar_frame_atual()
+
+    def _atualizar_preview_marcacoes(self):
+        for w in self.frame_preview_marcacoes.winfo_children():
+            w.destroy()
+
+        if not self._marcacoes_cache:
+            ctk.CTkLabel(self.frame_preview_marcacoes, text="Nenhuma marcação ainda.",
+                         text_color="gray").pack(side="left", padx=6, pady=10)
+            return
+
+        atual = self.segundo_atual()
+
+        def fmt(s):
+            return f"{int(s)//60:02d}:{int(s)%60:02d}"
+
+        for m in self._marcacoes_cache:
+            seg    = m.get("SegundoMarca", 0)
+            cor    = m.get("Cor") or "#555555"
+            rotulo = m.get("Reacao") or "📝 Nota"
+            feita  = seg <= atual
+
+            chip = ctk.CTkFrame(self.frame_preview_marcacoes, fg_color=cor, corner_radius=6)
+            chip.pack(side="left", padx=4, pady=4)
+
+            texto = f"{'✔' if feita else '⏳'} {fmt(seg)}  {rotulo}"
+            ctk.CTkLabel(chip, text=texto, text_color="white",
+                         font=ctk.CTkFont(size=10)).pack(padx=8, pady=4)
+
+    def _tick_preview(self):
+        """Loop leve (a cada 500ms) que atualiza os ✔/⏳ da prévia enquanto o vídeo toca."""
+        if not self._tocando:
+            self._preview_after_id = None
+            return
+        self._atualizar_preview_marcacoes()
+        self._preview_after_id = self.after(500, self._tick_preview)
+
+    def atualizar_marcacoes(self):
+        """
+        Chamado externamente (pelo PainelAnotacoes) sempre que uma marcação é
+        criada, conectada ou removida — atualiza a timeline e a prévia.
+        """
+        self._recarregar_cache_marcacoes()
+        self._desenhar_marcacoes_timeline()
+        self._atualizar_preview_marcacoes()

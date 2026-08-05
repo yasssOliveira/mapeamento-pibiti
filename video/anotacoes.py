@@ -168,6 +168,7 @@ class PainelAnotacoes(ctk.CTkFrame):
             var.set(False)
 
         self._carregar_marcacoes()
+        self.player.atualizar_marcacoes()
 
     def _registrar_conexao(self):
         segundo = self.player.segundo_atual()
@@ -193,6 +194,7 @@ class PainelAnotacoes(ctk.CTkFrame):
         criar_conexao(mid, p1["Id"], p2["Id"], tipo)
 
         self._carregar_marcacoes()
+        self.player.atualizar_marcacoes()
 
     def _carregar_marcacoes(self):
         for w in self.lista_marcacoes.winfo_children():
@@ -242,3 +244,4 @@ class PainelAnotacoes(ctk.CTkFrame):
         if messagebox.askyesno("Confirmar", "Deletar esta marcação?"):
             deletar_marcacao(marcacao_id)
             self._carregar_marcacoes()
+            self.player.atualizar_marcacoes()
