@@ -30,15 +30,9 @@ tirar esse monte de modalidade
 
 
 pra parte de video 
-*********PRIORIDADE ALTA********* 
-> scroll nao ta indo ate o fial na parte do lado direito  
+*********PRIORIDADE ALTA*********  
 > mover a parte onde aparece pra sincronizar o audio pq ela nao se mexe
-> tem que aparecer na barra de progresso tipo umas barras verticais sempre que houver uma marcação no tempo
-atual ou apertar no botao marcar aqui e tambem quando tiver uma reação
-> tem q ter uma parte que apareça uma previa das marcações que ja foram e estao sendo feitas e um botao que 
-gere um *arquivo no final tipo um relatorio 
-> se o video acabar antes e continuar rodando o audio a barra de progresso do audio tem que progredir ate
-o audio acabar 
+> e um botao que gere um *arquivo no final tipo um relatorio  
 
 *********PRIORIDADE MEDIA*********
 > mudar a velocidade podendo aumentar ou diminuir
