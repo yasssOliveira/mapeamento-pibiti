@@ -204,41 +204,43 @@ class PainelAnotacoes(ctk.CTkFrame):
             self._renderizar_marcacao(m)
 
     def _renderizar_marcacao(self, m):
-        card = ctk.CTkFrame(self.lista_marcacoes, fg_color="#2b2b2b", corner_radius=6)
-        card.pack(fill="x", pady=3, padx=2)
+        card = ctk.CTkFrame(self.lista_marcacoes, fg_color="#2b2b2b", corner_radius=4)
+        card.pack(fill="x", pady=1, padx=1)
 
         tempo   = fmt_tempo(m["SegundoMarca"])
         reacao  = m.get("Reacao") or "📝 Nota"
         desc    = m.get("Descricao") or ""
         cor     = m.get("Cor") or "#555555"
 
-        header = ctk.CTkFrame(card, fg_color=cor, corner_radius=4)
-        header.pack(fill="x", padx=4, pady=(4, 0))
-        ctk.CTkLabel(header, text=f"⏱ {tempo}  |  {reacao}",
-                     font=ctk.CTkFont(weight="bold")).pack(side="left", padx=6)
+        header = ctk.CTkFrame(card, fg_color=cor, corner_radius=3)
+        header.pack(fill="x", padx=2, pady=(2, 0))
+        header.bind("<Button-1>", lambda e, s=m["SegundoMarca"]: self.player.ir_para_segundo(s))
 
-        # Botão deletar
-        ctk.CTkButton(header, text="✖", width=28, fg_color="transparent",
-                      command=lambda mid=m["Id"]: self._deletar(mid)).pack(side="right", padx=4)
+        lbl_cab = ctk.CTkLabel(header, text=f"⏱ {tempo}  |  {reacao}",
+                                font=ctk.CTkFont(size=11, weight="bold"))
+        lbl_cab.pack(side="left", padx=4)
+        lbl_cab.bind("<Button-1>", lambda e, s=m["SegundoMarca"]: self.player.ir_para_segundo(s))
+
+        ctk.CTkButton(header, text="✖", width=20, height=18, fg_color="transparent",
+                      command=lambda mid=m["Id"]: self._deletar(mid)).pack(side="right", padx=2)
 
         if desc:
-            ctk.CTkLabel(card, text=desc, anchor="w", wraplength=260).pack(
-                fill="x", padx=8, pady=2
-            )
+            lbl_desc = ctk.CTkLabel(card, text=desc, anchor="w", wraplength=230,
+                                     font=ctk.CTkFont(size=10))
+            lbl_desc.pack(fill="x", padx=6, pady=1)
+            lbl_desc.bind("<Button-1>", lambda e, s=m["SegundoMarca"]: self.player.ir_para_segundo(s))
 
-        # Integrantes
         pessoas = listar_integrantes_marcacao(m["Id"])
         if pessoas:
             nomes = ", ".join(p["NomeCompleto"] for p in pessoas)
             ctk.CTkLabel(card, text=f"👤 {nomes}", anchor="w",
-                         text_color="gray").pack(fill="x", padx=8, pady=(0, 2))
+                         font=ctk.CTkFont(size=9), text_color="gray").pack(fill="x", padx=6)
 
-        # Conexões
         conexoes = listar_conexoes(m["Id"])
         for c in conexoes:
             ctk.CTkLabel(card,
                          text=f"🔗 {c['Pessoa1']} ↔ {c['Pessoa2']} ({c['TipoReacao']})",
-                         anchor="w", text_color="#aaa").pack(fill="x", padx=8)
+                         anchor="w", font=ctk.CTkFont(size=9), text_color="#aaa").pack(fill="x", padx=6)
 
     def _deletar(self, marcacao_id):
         if messagebox.askyesno("Confirmar", "Deletar esta marcação?"):

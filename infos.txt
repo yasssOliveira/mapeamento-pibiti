@@ -24,13 +24,16 @@ tirar esse monte de modalidade
 --> num da camisa tb n importa muito pq pode mudar na hora do jogo
 
 >>>>>>perfis<<<<<<<
---> campos alteráveis
 --> mais campos tipo descição altura peso sla mais oq
 --> adicionar ou excluir modalidades 
 
 
 pra parte de video 
+> diminuir o tamanho das marcações 
+> quero poder clicar nas marcações e ir pra parte do video que elas correspondem
+
 *********PRIORIDADE ALTA*********  
+> pq caralhos ele roda o video tao lento demora 3 segundos p passar um segundo
 > mover a parte onde aparece pra sincronizar o audio pq ela nao se mexe
 > e um botao que gere um *arquivo no final tipo um relatorio  
 

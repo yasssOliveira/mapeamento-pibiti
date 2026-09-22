@@ -42,6 +42,8 @@ from db.crud import (
     remover_integrante_sessao,
     atualizar_sessao_video,
     buscar_sessao_por_id,
+    listar_atletas_do_time,   
+    buscar_time_por_id,       
 )
 
 # ============================================================
@@ -49,7 +51,6 @@ from db.crud import (
 # ============================================================
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
-
 
 # ============================================================
 # COMPONENTES REUTILIZÁVEIS
@@ -1373,10 +1374,10 @@ class AbaVideo(ctk.CTkFrame):
 
         self.tree_busca_integ = ttk.Treeview(
             frame_busca_integ,
-            columns=["Id", "Nome", "Tipo"],
+            columns=["Série", "Nome", "Tipo"],
             show="headings", height=3
         )
-        for col in ["Id", "Nome", "Tipo"]:
+        for col in ["Série", "Nome", "Tipo"]:
             self.tree_busca_integ.heading(col, text=col)
             self.tree_busca_integ.column(col, width=80)
         self.tree_busca_integ.pack(fill="x")
@@ -1384,15 +1385,49 @@ class AbaVideo(ctk.CTkFrame):
 
         ctk.CTkLabel(self.frame_dir, text="Na sessão:").pack(anchor="w", padx=8, pady=(8, 2))
 
+        # --- Adicionar TIME COMPLETO à sessão ---
+        ctk.CTkLabel(self.frame_dir, text="Adicionar time completo:",
+                     font=ctk.CTkFont(size=12, weight="bold")).pack(
+            anchor="w", padx=8, pady=(8, 2)
+        )
+
+        row_time = ctk.CTkFrame(self.frame_dir)
+        row_time.pack(fill="x", padx=8, pady=4)
+
+        self.e_busca_time_sessao = ctk.CTkEntry(row_time, placeholder_text="Nome do time...", width=160)
+        self.e_busca_time_sessao.pack(side="left", padx=(0, 4))
+        ctk.CTkButton(row_time, text="🔍", width=36,
+                      command=self._buscar_time_sessao).pack(side="left")
+
+        frame_busca_time_sessao = ctk.CTkFrame(self.frame_dir)
+        frame_busca_time_sessao.pack(fill="x", padx=8, pady=4)
+
+        self.tree_busca_time_sessao = ttk.Treeview(
+            frame_busca_time_sessao,
+            columns=["Id", "Nome", "Modalidade"],
+            show="headings", height=3
+        )
+        for col in ["Id", "Nome", "Modalidade"]:
+            self.tree_busca_time_sessao.heading(col, text=col)
+            self.tree_busca_time_sessao.column(col, width=80)
+        self.tree_busca_time_sessao.pack(fill="x")
+
+        ctk.CTkButton(self.frame_dir, text="➕ Adicionar Time Completo",
+                      fg_color="#2d6a4f",
+                      command=self._adicionar_time_completo).pack(pady=4)
+
+        # --- Integrantes já na sessão ---
+        ctk.CTkLabel(self.frame_dir, text="Na sessão:").pack(anchor="w", padx=8, pady=(10, 2))
+
         frame_integ_sessao = ctk.CTkFrame(self.frame_dir)
         frame_integ_sessao.pack(fill="x", padx=8, pady=4)
 
         self.tree_integ_sessao = ttk.Treeview(
             frame_integ_sessao,
-            columns=["Id", "Nome", "Tipo"],
+            columns=["Série", "Nome", "Tipo"],
             show="headings", height=4
         )
-        for col in ["Id", "Nome", "Tipo"]:
+        for col in ["Série", "Nome", "Tipo"]:
             self.tree_integ_sessao.heading(col, text=col)
             self.tree_integ_sessao.column(col, width=80)
         self.tree_integ_sessao.pack(fill="x")
@@ -1475,19 +1510,19 @@ class AbaVideo(ctk.CTkFrame):
     def _buscar_integrante(self):
         termo = self.e_busca_integ.get().strip().lower()
         self.e_busca_integ.delete(0, "end")
-
         for row in self.tree_busca_integ.get_children():
             self.tree_busca_integ.delete(row)
-
         filtrados = [
             p for p in listar_pessoas()
             if termo in p["NomeCompleto"].lower()
             or termo in (p.get("NumeroSerie") or "").lower()
         ]
         for p in filtrados:
-            self.tree_busca_integ.insert("", "end", values=(
-                p["Id"], p["NomeCompleto"], p["TipoPessoa"]
-            ))
+            self.tree_busca_integ.insert(
+                "", "end",
+                iid=str(p["Id"]),
+                values=(p.get("NumeroSerie") or "—", p["NomeCompleto"], p["TipoPessoa"])
+            )
 
     def _adicionar_integrante(self, event):
         if not self._sessao_id:
@@ -1496,8 +1531,8 @@ class AbaVideo(ctk.CTkFrame):
         sel = self.tree_busca_integ.focus()
         if not sel:
             return
-        valores = self.tree_busca_integ.item(sel)["values"]
-        adicionar_integrante_sessao(self._sessao_id, valores[0])
+        pessoa_id = int(sel)
+        adicionar_integrante_sessao(self._sessao_id, pessoa_id)
         self._atualizar_integrantes_sessao()
         if hasattr(self, "_painel_widget"):
             self._painel_widget._atualizar_combos_integrantes()
@@ -1506,8 +1541,8 @@ class AbaVideo(ctk.CTkFrame):
         sel = self.tree_integ_sessao.focus()
         if not sel:
             return
-        valores = self.tree_integ_sessao.item(sel)["values"]
-        remover_integrante_sessao(self._sessao_id, valores[0])
+        pessoa_id = int(sel)
+        remover_integrante_sessao(self._sessao_id, pessoa_id)
         self._atualizar_integrantes_sessao()
         if hasattr(self, "_painel_widget"):
             self._painel_widget._atualizar_combos_integrantes()
@@ -1518,10 +1553,49 @@ class AbaVideo(ctk.CTkFrame):
         if not self._sessao_id:
             return
         for p in listar_integrantes_sessao(self._sessao_id):
-            self.tree_integ_sessao.insert("", "end", values=(
-                p["Id"], p["NomeCompleto"], p["TipoPessoa"]
-            ))
+            self.tree_integ_sessao.insert(
+                "", "end",
+                iid=str(p["Id"]),
+                values=(p.get("NumeroSerie") or "—", p["NomeCompleto"], p["TipoPessoa"])
+            )
 
+    def _buscar_time_sessao(self):
+        termo = self.e_busca_time_sessao.get().strip().lower()
+        self.e_busca_time_sessao.delete(0, "end")
+        for row in self.tree_busca_time_sessao.get_children():
+            self.tree_busca_time_sessao.delete(row)
+
+        filtrados = [t for t in listar_times() if termo in t["Nome"].lower()]
+        for t in filtrados:
+            self.tree_busca_time_sessao.insert(
+                "", "end", iid=str(t["Id"]),
+                values=(t["Id"], t["Nome"], t["NomeModalidade"])
+            )
+
+    def _adicionar_time_completo(self):
+        if not self._sessao_id:
+            messagebox.showwarning("Atenção", "Abra uma sessão primeiro.")
+            return
+
+        sel = self.tree_busca_time_sessao.focus()
+        if not sel:
+            messagebox.showwarning("Atenção", "Selecione um time na busca.")
+            return
+
+        time_id = int(sel)
+        time_info = buscar_time_por_id(time_id)
+
+        for atleta in listar_atletas_do_time(time_id):
+            adicionar_integrante_sessao(self._sessao_id, atleta["Id"])
+
+        if time_info and time_info.get("TreinadorId"):
+            adicionar_integrante_sessao(self._sessao_id, time_info["TreinadorId"])
+
+        self._atualizar_integrantes_sessao()
+        if hasattr(self, "_painel_widget"):
+            self._painel_widget._atualizar_combos_integrantes()
+
+        messagebox.showinfo("Sucesso", f"Time '{time_info['Nome']}' adicionado à sessão!")
 
 # ============================================================
 # JANELA PRINCIPAL  ← definida por último, depois de todas as abas
@@ -1544,13 +1618,13 @@ class App(ctk.CTk):
             (AbaTorneio,   "  🏆 Torneios  "),
             (AbaTime,      "  👥 Times  "),
             (AbaInscricao, "  📝 Inscrições  "),
-            (AbaMembro,    "  Membros  "),
+            #(AbaMembro,    "  Membros  "),
             (AbaPerfil,    "  🔍 Perfis  "),
             (AbaVideo,     "  🎬 Análise  "),
         ]
         for Classe, titulo in abas:
             # página real do notebook: um frame comum, filho direto dele
-            pagina = ctk.CTkFrame(notebook, fg_color="transparent")
+            pagina = ctk.CTkFrame(notebook)
             notebook.add(pagina, text=titulo)
             pagina.pack_propagate(True)
 
@@ -1561,6 +1635,8 @@ class App(ctk.CTk):
             # a aba de verdade vai dentro do scroll
             aba = Classe(scroll)
             aba.pack(fill="both", expand=True)
+
+    
 
 # ============================================================
 # ENTRY POINT

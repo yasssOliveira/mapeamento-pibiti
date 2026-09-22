@@ -149,11 +149,6 @@ modalidades = [
     ('Voleibol',),
     ('Basquetebol',),
     ('Handebol',),
-    ('Atletismo',),
-    ('Natação',),
-    ('Rugby',),
-    ('Tênis de Mesa',),
-    ('Badminton',),
 ]
 
 #Sessão de análise: vincula um vídeo a um torneio/time
@@ -231,7 +226,6 @@ CREATE TABLE IF NOT EXISTS MarcacaoConexao (
 ''')
 
 cursor.execute('''
-// Dados iniciais: botões padrão
 INSERT OR IGNORE INTO BotaoReacao (Rotulo, Cor) VALUES
     ('👍 Positivo',          '#2d6a4f'),
     ('👎 Negativo',          '#c0392b'),

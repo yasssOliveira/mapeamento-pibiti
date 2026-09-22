@@ -56,9 +56,15 @@ class PlayerVideo(ctk.CTkFrame):
         self._build()   
 
     def _build(self):
-        # --- Barra superior: sair da sessão ---
+        # --- Linha superior: carregar vídeo/áudio + sair da sessão, na mesma direção ---
         topo = ctk.CTkFrame(self, fg_color="transparent")
         topo.pack(fill="x", padx=10, pady=(6, 0))
+
+        ctk.CTkButton(topo, text="📁 Carregar Vídeo", width=130,
+                      command=self.carregar_video).pack(side="left", padx=(0, 6))
+        ctk.CTkButton(topo, text="🎵 Carregar Áudio", width=130,
+                      command=self.carregar_audio).pack(side="left", padx=(0, 6))
+
         ctk.CTkButton(topo, text="✖ Sair da Sessão", width=140,
                       fg_color="#c0392b",
                       command=self._sair_da_sessao).pack(side="right")
@@ -78,7 +84,7 @@ class PlayerVideo(ctk.CTkFrame):
                                             anchor="w", text_color="gray")
         self.lbl_nome_audio.pack(side="left")
 
-        # Barra de progresso (slider)
+        # Barra de progresso (slider) do vídeo
         self.slider = ctk.CTkSlider(self, from_=0, to=100, command=self._ao_mover_slider)
         self.slider.set(0)
         self.slider.pack(fill="x", padx=10, pady=4)
@@ -100,7 +106,41 @@ class PlayerVideo(ctk.CTkFrame):
         )
         self.frame_preview_marcacoes.pack(fill="x", padx=10, pady=(2, 6))
 
-        # Áudio 
+        # --- Controles principais: Play/Stop e Marcar aqui, alinhados à esquerda ---
+        ctrl = ctk.CTkFrame(self, fg_color="transparent")
+        ctrl.pack(fill="x", padx=10, pady=6)
+
+        self.btn_play = ctk.CTkButton(ctrl, text="▶ Play", width=90,
+                                       command=self._alternar_play_pause)
+        self.btn_play.grid(row=0, column=0, padx=(0, 6), sticky="w")
+
+        ctk.CTkButton(ctrl, text="⏹ Stop", width=90,
+                      command=self.stop).grid(row=0, column=1, padx=6, sticky="w")
+
+        ctk.CTkButton(ctrl, text="📍 Marcar aqui", width=120,
+                      fg_color="#c0392b",
+                      command=self._marcar_atual).grid(row=0, column=2, padx=6, sticky="w")
+
+        # --- Timeline visual de sincronização (arrastável) ---
+        ctk.CTkLabel(self, text="Arraste a trilha de áudio para sincronizar:",
+                     anchor="w").pack(fill="x", padx=10, pady=(6, 0))
+
+        zoom_row = ctk.CTkFrame(self, fg_color="transparent")
+        zoom_row.pack(fill="x", padx=10, pady=(2, 0))
+        ctk.CTkButton(zoom_row, text="🔍−", width=40,
+                      command=lambda: self._zoom_timeline(-15)).pack(side="left", padx=2)
+        ctk.CTkButton(zoom_row, text="🔍+", width=40,
+                      command=lambda: self._zoom_timeline(15)).pack(side="left", padx=2)
+
+        self.canvas_timeline = tk.Canvas(self, width=640, height=90,
+                                          bg="#1a1a1a", highlightthickness=0)
+        self.canvas_timeline.pack(fill="x", padx=10, pady=(4, 4))
+
+        self.canvas_timeline.tag_bind("audio_bar", "<Button-1>", self._iniciar_drag_audio)
+        self.canvas_timeline.tag_bind("audio_bar", "<B1-Motion>", self._arrastar_audio)
+        self.canvas_timeline.tag_bind("audio_bar", "<ButtonRelease-1>", self._soltar_audio)
+
+        # --- Botões de ajuste fino do offset, abaixo da trilha de arrastar ---
         sync = ctk.CTkFrame(self)
         sync.pack(fill="x", padx=10, pady=(0, 6))
 
@@ -126,44 +166,6 @@ class PlayerVideo(ctk.CTkFrame):
         self.e_offset.pack(side="left", padx=(10, 2))
         ctk.CTkButton(sync, text="Aplicar", width=70,
                       command=self._aplicar_offset_manual).pack(side="left")
-
-        # Controles
-        ctrl = ctk.CTkFrame(self)
-        ctrl.pack(pady=6)
-
-        self.btn_play = ctk.CTkButton(ctrl, text="▶ Play", width=90,
-                                       command=self._alternar_play_pause)
-        self.btn_play.grid(row=0, column=0, padx=6)
-
-        ctk.CTkButton(ctrl, text="⏹ Stop", width=90, command=self.stop).grid(row=0, column=1, padx=6)
-
-        ctk.CTkButton(ctrl, text="📁 Carregar Vídeo", width=130,
-                      command=self.carregar_video).grid(row=0, column=3, padx=6)
-        ctk.CTkButton(ctrl, text="🎵 Carregar Áudio", width=130,
-                      command=self.carregar_audio).grid(row=0, column=4, padx=6)
-
-        ctk.CTkButton(ctrl, text="📍 Marcar aqui", width=120,
-                      fg_color="#c0392b",
-                      command=self._marcar_atual).grid(row=0, column=5, padx=6)
-        
-        # --- Timeline visual de sincronização (arrastável) ---
-        ctk.CTkLabel(self, text="Arraste a trilha de áudio para sincronizar:",
-                     anchor="w").pack(fill="x", padx=10, pady=(6, 0))
-
-        zoom_row = ctk.CTkFrame(self)
-        zoom_row.pack(fill="x", padx=10, pady=(2, 0))
-        ctk.CTkButton(zoom_row, text="🔍−", width=40,
-                      command=lambda: self._zoom_timeline(-15)).pack(side="left", padx=2)
-        ctk.CTkButton(zoom_row, text="🔍+", width=40,
-                      command=lambda: self._zoom_timeline(15)).pack(side="left", padx=2)
-
-        self.canvas_timeline = tk.Canvas(self, width=640, height=90,
-                                          bg="#1a1a1a", highlightthickness=0)
-        self.canvas_timeline.pack(fill="x", padx=10, pady=(4, 10))
-
-        self.canvas_timeline.tag_bind("audio_bar", "<Button-1>", self._iniciar_drag_audio)
-        self.canvas_timeline.tag_bind("audio_bar", "<B1-Motion>", self._arrastar_audio)
-        self.canvas_timeline.tag_bind("audio_bar", "<ButtonRelease-1>", self._soltar_audio)
 
         self._desenhar_timeline()
 
@@ -395,6 +397,25 @@ class PlayerVideo(ctk.CTkFrame):
 
     def segundo_atual(self):
         return self._frame_atual / self._fps if self._fps else 0
+
+    def ir_para_segundo(self, segundo):
+        """Pula o vídeo (e reposiciona o áudio, se tocando) para o tempo dado."""
+        if not self._cap or not self._fps:
+            return
+
+        frame = int(segundo * self._fps)
+        frame = max(0, min(frame, self._total_frames))
+
+        self._frame_atual = frame
+        self._cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
+        self.slider.set(frame)
+        self._atualizar_tempo(frame)
+        self._desenhar_marcacoes_timeline()
+
+        if self._tocando:
+            self._tocar_audio_sincronizado(frame / self._fps)
+        else:
+            self._mostrar_frame_atual()
     
     def _ajustar_offset(self, delta):
         self._audio_offset += delta
